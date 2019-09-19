@@ -1,0 +1,6 @@
+#pragma once
+#define IDS_MAINWINDOWCLASSNAME 1
+#define IDS_MAINWINDOWTITLE 2
+
+#define IDC_PUSH_BUTTON 100
+#define IDC_POP_BUTTON 101
