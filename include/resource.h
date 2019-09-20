@@ -4,3 +4,4 @@
 
 #define IDC_PUSH_BUTTON 100
 #define IDC_POP_BUTTON 101
+#define IDC_SHIFT_BUTTON 102

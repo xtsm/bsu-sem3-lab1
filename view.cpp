@@ -36,7 +36,7 @@ MainWindowView::MainWindowView(HINSTANCE hInst, int cmdShow, QueueModel& model) 
     RegisterClassEx(&wc);
   }
   DWORD windowStyle = WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION;
-  _mainWindow = CreateWindowEx(0, _className, _title, windowStyle, 400, 300, 134, 160, 0, 0, _appInstance, this);
+  _mainWindow = CreateWindowEx(0, _className, _title, windowStyle, 400, 300, 294, 156, 0, 0, _appInstance, this);
   ShowWindow(_mainWindow, cmdShow);
   UpdateWindow(_mainWindow);
 }
@@ -52,11 +52,12 @@ LRESULT MainWindowView::ProcessMessage(HWND window, UINT message, WPARAM wp, LPA
       return 0;
     }
     case WM_CREATE: {
-      _elementEdit = CreateWindowEx(0, "EDIT", "", WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_BORDER | ES_LEFT | ES_AUTOHSCROLL, 4, 4, 120, 24, window, 0, _appInstance, 0);
-      _pushButton = CreateWindowEx(0, "BUTTON", "Push", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON, 4, 36, 56, 24, window, reinterpret_cast<HMENU>(IDC_PUSH_BUTTON), _appInstance, 0);
-      _popButton = CreateWindowEx(0, "BUTTON", "Pop", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON, 68, 36, 56, 24, window, reinterpret_cast<HMENU>(IDC_POP_BUTTON), _appInstance, 0);
-      _queueLabel = CreateWindowEx(0, "STATIC", "[]", WS_CHILD | WS_VISIBLE | SS_CENTER, 4, 68, 120, 24, window, 0, _appInstance, 0);
-      _statusLabel = CreateWindowEx(0, "STATIC", "size: 0", WS_CHILD | WS_VISIBLE | SS_CENTER, 4, 100, 120, 24, window, 0, _appInstance, 0);
+      _elementEdit = CreateWindowEx(0, "EDIT", "", WS_CHILD | WS_VISIBLE | WS_TABSTOP | WS_BORDER | ES_LEFT | ES_AUTOHSCROLL, 4, 4, 280, 24, window, 0, _appInstance, 0);
+      _pushButton = CreateWindowEx(0, "BUTTON", "Push", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON, 4, 36, 88, 24, window, reinterpret_cast<HMENU>(IDC_PUSH_BUTTON), _appInstance, 0);
+      _popButton = CreateWindowEx(0, "BUTTON", "Pop", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON, 100, 36, 88, 24, window, reinterpret_cast<HMENU>(IDC_POP_BUTTON), _appInstance, 0);
+      _popButton = CreateWindowEx(0, "BUTTON", "Shift", WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_DEFPUSHBUTTON, 196, 36, 88, 24, window, reinterpret_cast<HMENU>(IDC_SHIFT_BUTTON), _appInstance, 0);
+      _queueLabel = CreateWindowEx(0, "STATIC", _model.GetQueueString().c_str(), WS_CHILD | WS_VISIBLE | SS_CENTER, 4, 68, 136, 56, window, 0, _appInstance, 0);
+      _statusLabel = CreateWindowEx(0, "STATIC", _model.GetStatusString().c_str(), WS_CHILD | WS_VISIBLE | SS_CENTER, 148, 68, 136, 56, window, 0, _appInstance, 0);
       return 0;
     }
     case WM_COMMAND: {
@@ -67,22 +68,23 @@ LRESULT MainWindowView::ProcessMessage(HWND window, UINT message, WPARAM wp, LPA
           GetWindowText(_elementEdit, newElement.data(), sz + 1);
           newElement.resize(sz);
           _model.Push(newElement);
-
-          SetWindowText(_statusLabel, _model.GetStatusString().c_str());
-          SetWindowText(_queueLabel, _model.GetQueueString().c_str());
-          return 0;
+          break;
         }
         case IDC_POP_BUTTON: {
           _model.Pop();
-
-          SetWindowText(_statusLabel, _model.GetStatusString().c_str());
-          SetWindowText(_queueLabel, _model.GetQueueString().c_str());
-          return 0;
+          break;
+        }
+        case IDC_SHIFT_BUTTON: {
+          _model.Shift();
+          break;
         }
         default: {
           return DefWindowProc(window, message, wp, lp);
         }
       }
+      SetWindowText(_statusLabel, _model.GetStatusString().c_str());
+      SetWindowText(_queueLabel, _model.GetQueueString().c_str());
+      return 0;
     }
     default: {
       return DefWindowProc(window, message, wp, lp);

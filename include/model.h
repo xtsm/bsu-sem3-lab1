@@ -8,6 +8,7 @@ class QueueModel {
   std::string GetStatusString() const;
   void Push(const std::string&);
   void Pop();
+  void Shift();
  private:
   Queue<std::string> _queue;
   std::string _lastAction;

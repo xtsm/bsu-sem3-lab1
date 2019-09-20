@@ -1,4 +1,5 @@
 #include "include/model.h"
+#include "include/shift_visitor.h"
 #include <sstream>
 
 QueueModel::QueueModel() : _queue(), _lastAction() {}
@@ -27,5 +28,12 @@ void QueueModel::Pop() {
   std::string val = _queue.Pop();
   std::ostringstream stream;
   stream << "popped \"" << val << "\"";
+  _lastAction = stream.str();
+}
+
+void QueueModel::Shift() {
+  _queue.Accept(ShiftVisitor<Queue<std::string>>());
+  std::ostringstream stream;
+  stream << "shifted 1 left";
   _lastAction = stream.str();
 }
