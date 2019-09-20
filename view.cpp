@@ -1,4 +1,3 @@
-#include <sstream>
 #include "include/view.h"
 #include "include/resource.h"
 
