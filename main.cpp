@@ -3,6 +3,7 @@
 #include "include/resource.h"
 #include "include/queue.h"
 #include "include/view.h"
+#include "include/model.h"
 
 int APIENTRY WinMain(
     HINSTANCE hInst,
@@ -10,7 +11,8 @@ int APIENTRY WinMain(
     LPSTR,
     int cmdShow) {
 
-  MainWindowView view(hInst, cmdShow);
+  QueueModel model;
+  MainWindowView view(hInst, cmdShow, model);
 
   int retCode = 1;
   while (true) {

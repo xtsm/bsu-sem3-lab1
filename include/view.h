@@ -1,10 +1,11 @@
 #pragma once
 #include <windows.h>
 #include "queue.h"
+#include "model.h"
 
 class MainWindowView {
  public:
-  MainWindowView(HINSTANCE, int);
+  MainWindowView(HINSTANCE, int, QueueModel&);
 
   HWND GetWindowHandle() const;
   LRESULT ProcessMessage(HWND, UINT, WPARAM, LPARAM);
@@ -18,7 +19,7 @@ class MainWindowView {
   HWND queueLabel, statusLabel;
   HWND elementEdit;
   HWND pushButton, popButton;
-  Queue<std::string> queue;
+  QueueModel& model;
 
   MainWindowView(const MainWindowView&) = delete;
   MainWindowView& operator=(const MainWindowView&) = delete;

@@ -5,7 +5,7 @@
 char* MainWindowView::_className = nullptr;
 char* MainWindowView::_title = nullptr;
 
-MainWindowView::MainWindowView(HINSTANCE hInst, int cmdShow) : 
+MainWindowView::MainWindowView(HINSTANCE hInst, int cmdShow, QueueModel& model) : 
     appInstance(hInst),
     mainWindow(0),
     queueLabel(0),
@@ -13,7 +13,7 @@ MainWindowView::MainWindowView(HINSTANCE hInst, int cmdShow) :
     elementEdit(0),
     pushButton(0),
     popButton(0),
-    queue()
+    model(model)
 {
   if (_className == nullptr) {
     _className = new char[256];
@@ -67,29 +67,17 @@ LRESULT MainWindowView::ProcessMessage(HWND window, UINT message, WPARAM wp, LPA
           std::string newElement(sz + 1, 0);
           GetWindowText(elementEdit, newElement.data(), sz + 1);
           newElement.resize(sz);
-          queue.Push(newElement);
+          model.Push(newElement);
 
-          std::ostringstream stream;
-          stream << "Inserted " << newElement << ", size: " << queue.Size();
-          SetWindowText(statusLabel, stream.str().c_str());
-
-          stream.str(std::string());
-          stream.clear();
-          stream << queue;
-          SetWindowText(queueLabel, stream.str().c_str());
+          SetWindowText(statusLabel, model.GetStatusString().c_str());
+          SetWindowText(queueLabel, model.GetQueueString().c_str());
           return 0;
         }
         case IDC_POP_BUTTON: {
-          std::string newElement = queue.Pop();
+          model.Pop();
 
-          std::ostringstream stream;
-          stream << "Deleted " << newElement << ", size: " << queue.Size();
-          SetWindowText(statusLabel, stream.str().c_str());
-
-          stream.str(std::string());
-          stream.clear();
-          stream << queue;
-          SetWindowText(queueLabel, stream.str().c_str());
+          SetWindowText(statusLabel, model.GetStatusString().c_str());
+          SetWindowText(queueLabel, model.GetQueueString().c_str());
           return 0;
         }
         default: {
