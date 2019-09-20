@@ -12,14 +12,14 @@ class MainWindowView {
  private:
   static char* _className;
   static char* _title;
-  static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+  static LRESULT CALLBACK _WndProc(HWND, UINT, WPARAM, LPARAM);
 
-  HINSTANCE appInstance;
-  HWND mainWindow;
-  HWND queueLabel, statusLabel;
-  HWND elementEdit;
-  HWND pushButton, popButton;
-  QueueModel& model;
+  HINSTANCE _appInstance;
+  HWND _mainWindow;
+  HWND _queueLabel, _statusLabel;
+  HWND _elementEdit;
+  HWND _pushButton, _popButton;
+  QueueModel& _model;
 
   MainWindowView(const MainWindowView&) = delete;
   MainWindowView& operator=(const MainWindowView&) = delete;
