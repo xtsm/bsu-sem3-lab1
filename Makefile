@@ -1,5 +1,5 @@
 CXXFLAGS=-Wall -Wextra -Weffc++ -Werror -std=c++17
-SRC=main.cpp view.cpp model.cpp controller.cpp
+SRC=main.cpp view.cpp model.cpp controller.cpp observe.cpp
 
 .PHONY: all test main
 

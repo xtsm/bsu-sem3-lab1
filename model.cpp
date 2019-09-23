@@ -22,6 +22,7 @@ void QueueModel::Push(const std::string& val) {
   std::ostringstream stream;
   stream << "pushed \"" << val << "\"";
   _lastAction = stream.str();
+  SendEvent(ModelUpdateEvent(GetQueueString(), GetStatusString()));
 }
 
 void QueueModel::Pop() {
@@ -29,6 +30,7 @@ void QueueModel::Pop() {
   std::ostringstream stream;
   stream << "popped \"" << val << "\"";
   _lastAction = stream.str();
+  SendEvent(ModelUpdateEvent(GetQueueString(), GetStatusString()));
 }
 
 void QueueModel::Shift() {
@@ -36,4 +38,5 @@ void QueueModel::Shift() {
   std::ostringstream stream;
   stream << "shifted 1 left";
   _lastAction = stream.str();
+  SendEvent(ModelUpdateEvent(GetQueueString(), GetStatusString()));
 }

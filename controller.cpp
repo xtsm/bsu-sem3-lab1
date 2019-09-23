@@ -1,7 +1,27 @@
 #include "include/controller.h"
 #include <iostream>
 
-AppController::AppController(MainWindowView& view) : _view(view) {}
+AppController::AppController(QueueModel& model, MainWindowView& view) : _model(model), _view(view) {
+  _view.AddListener(this);
+}
+
+void AppController::ProcessEvent(const Event& evt) {
+  switch(evt.GetType()) {
+    case EventType::UserPop: {
+      _model.Pop();
+      break;
+    }
+    case EventType::UserPush: {
+      _model.Push(dynamic_cast<const UserPushEvent&>(evt).Value);
+      break;
+    }
+    case EventType::UserShift: {
+      _model.Shift();
+      break;
+    }
+    default: break;
+  }
+}
 
 int AppController::Run() {
   int retCode = 1;

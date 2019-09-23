@@ -2,13 +2,15 @@
 #include <windows.h>
 #include "queue.h"
 #include "model.h"
+#include "observe.h"
 
-class MainWindowView {
+class MainWindowView : public EventSource, IListener {
  public:
   MainWindowView(HINSTANCE, int, QueueModel&);
 
   HWND GetWindowHandle() const;
   LRESULT ProcessMessage(HWND, UINT, WPARAM, LPARAM);
+  void ProcessEvent(const Event&);
  private:
   static char* _className;
   static char* _title;

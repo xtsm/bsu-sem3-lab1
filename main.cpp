@@ -10,6 +10,6 @@ int APIENTRY WinMain(
     int cmdShow) {
   QueueModel model;
   MainWindowView view(hInst, cmdShow, model);
-  AppController controller(view);
+  AppController controller(model, view);
   return controller.Run();
 }
