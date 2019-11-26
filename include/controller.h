@@ -5,10 +5,10 @@
 
 class AppController : public IListener {
  public:
-  AppController(QueueModel&, MainWindowView&);
+  AppController(QueueModel&, CLIView&);
   void ProcessEvent(const Event&);
   int Run();
  private:
   QueueModel& _model;
-  MainWindowView& _view;
+  CLIView& _view;
 };

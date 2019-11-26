@@ -1,7 +1,7 @@
 #include "include/controller.h"
 #include <iostream>
 
-AppController::AppController(QueueModel& model, MainWindowView& view) : _model(model), _view(view) {
+AppController::AppController(QueueModel& model, CLIView& view) : _model(model), _view(view) {
   _view.AddListener(this);
 }
 
@@ -24,32 +24,11 @@ void AppController::ProcessEvent(const Event& evt) {
 }
 
 int AppController::Run() {
-  int retCode = 1;
-  while (true) {
-    MSG message;
-    bool loopQuit = false;
-    switch (GetMessage(&message, 0, 0, 0)) {
-      case -1: {
-        std::cerr << "GetMessage returned -1" << std::endl;
-        loopQuit = true;
-        break;
-      }
-      case 0: {
-        retCode = message.wParam;
-        loopQuit = true;
-        break;
-      }
-      default: {
-        if (IsDialogMessage(_view.GetWindowHandle(), &message) == 0) {
-          TranslateMessage(&message);
-          DispatchMessage(&message);
-        }
-      }
-    }
-    if (loopQuit) {
-      break;
-    }
+  try {
+    while (_view.ProcessUserInput());
+  } catch (const std::exception& e) {
+    std::cerr << "AppController has caught an exception: " << e.what() << std::endl;
+    return 1;
   }
-
-  return retCode;
+  return 0;
 }

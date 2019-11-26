@@ -1,15 +1,10 @@
-#include <windows.h>
 #include "include/model.h"
 #include "include/view.h"
 #include "include/controller.h"
 
-int APIENTRY WinMain(
-    HINSTANCE hInst,
-    HINSTANCE,
-    LPSTR,
-    int cmdShow) {
+int main() {
   QueueModel model;
-  MainWindowView view(hInst, cmdShow, model);
+  CLIView view(model);
   AppController controller(model, view);
   return controller.Run();
 }
