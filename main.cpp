@@ -1,5 +1,5 @@
 #include "include/model.h"
-#include "include/view.h"
+#include "include/cli_view.h"
 #include "include/controller.h"
 
 int main() {

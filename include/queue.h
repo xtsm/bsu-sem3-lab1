@@ -5,6 +5,11 @@
 #include <utility>
 #include "visitor.h"
 
+template<class T> class Queue;
+template<class T> class QueueIterator;
+template<class T> std::istream& operator>>(std::istream& is, Queue<T>& q);
+template<class T> std::ostream& operator<<(std::ostream& os, const Queue<T>& q);
+
 template<class T>
 class Queue : public IAcceptsVisitor<Queue<T>> {
  public:
@@ -76,25 +81,6 @@ class Queue : public IAcceptsVisitor<Queue<T>> {
 
   void Accept(const IVisitor<Queue<T>>& visitor) {
     visitor.Visit(*this);
-  }
-
-  friend std::istream& operator>>(std::istream& is, Queue& q) {
-    q.head_ = 0;
-    is >> q.tail_;
-    delete[] q.data_;
-    q.data_ = new T[q.tail_ - q.head_];
-    for (T& i : q) {
-      is >> i;
-    }
-    return is;
-  }
-
-  friend std::ostream& operator<<(std::ostream& os, const Queue& q) {
-    os << "[ ";
-    for (const T& i : q) {
-      os << i << ' ';
-    }
-    return os << ']';
   }
 
   Queue& operator+=(const Queue& rhs) {
@@ -189,109 +175,14 @@ class Queue : public IAcceptsVisitor<Queue<T>> {
     std::swap(tail_, rhs.tail_);
   }
 
-  class iterator;
-  class const_iterator;
-
-  class iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
-   public:
-    iterator() : ptr_(nullptr) {
-    }
-    explicit iterator(T* ptr) : ptr_(ptr) {
-    }
-    operator const_iterator() const {
-      return const_iterator(ptr_);
-    }
-    iterator& operator++() {
-      ptr_++;
-      return *this;
-    }
-    iterator operator++(int) {
-      return iterator(ptr_++);
-    }
-    iterator& operator--() {
-      ptr_--;
-      return *this;
-    }
-    iterator operator--(int) {
-      return iterator(ptr_--);
-    }
-    bool operator==(const const_iterator& rhs) const {
-      return ptr_ == rhs.ptr_;
-    }
-    bool operator!=(const const_iterator& rhs) const {
-      return ptr_ != rhs.ptr_;
-    }
-    T& operator*() const {
-      return *ptr_;
-    }
-    T* operator->() const {
-      return ptr_;
-    }
-
-   private:
-    friend class const_iterator;
-    T* ptr_;
-  };
-
-  class const_iterator :
-      public std::iterator<std::bidirectional_iterator_tag, T> {
-   public:
-    const_iterator() : ptr_(nullptr) {
-    }
-    explicit const_iterator(T* ptr) : ptr_(ptr) {
-    }
-    const_iterator& operator++() {
-      ptr_++;
-      return *this;
-    }
-    const_iterator operator++(int) {
-      return const_iterator(ptr_++);
-    }
-    const_iterator& operator--() {
-      ptr_--;
-      return *this;
-    }
-    const_iterator operator--(int) {
-      return const_iterator(ptr_--);
-    }
-    bool operator==(const const_iterator& rhs) const {
-      return ptr_ == rhs.ptr_;
-    }
-    bool operator!=(const const_iterator& rhs) const {
-      return ptr_ != rhs.ptr_;
-    }
-    const T& operator*() const {
-      return *ptr_;
-    }
-    const T* operator->() const {
-      return ptr_;
-    }
-   private:
-    friend class iterator;
-    T* ptr_;
-  };
-
-  iterator begin() {
-    return iterator(data_ + head_);
-  }
-
-  iterator end() {
-    return iterator(data_ + tail_);
-  }
-
-  const_iterator begin() const {
-    return const_iterator(data_ + head_);
-  }
-
-  const_iterator end() const {
-    return const_iterator(data_ + tail_);
-  }
-
  protected:
   T* data_;
   size_t size_;
   size_t head_;
   size_t tail_;
+  friend std::istream& operator>><T>(std::istream& is, Queue& q);
+  friend std::ostream& operator<<<T>(std::ostream& os, const Queue& q);
+  friend class QueueIterator<T>;
 
   void Resize(size_t new_size) {
     T* data_new = new T[new_size];
@@ -303,3 +194,45 @@ class Queue : public IAcceptsVisitor<Queue<T>> {
     head_ = 0;
   }
 };
+
+template<class T>
+class QueueIterator {
+ public:
+  QueueIterator(const Queue<T>& q) : ptr_(q.data_ + q.head_), q_(q) {
+  }
+  T& Next() {
+    if (ptr_ == q_.data_ + q_.tail_) {
+      throw std::runtime_error("iterator out of range");
+    }
+    return *(ptr_++);
+  }
+  bool HasNext() {
+    return ptr_ != q_.data_ + q_.tail_;
+  }
+ private:
+  T* ptr_;
+  const Queue<T>& q_;
+};
+
+template<class T>
+std::istream& operator>>(std::istream& is, Queue<T>& q) {
+  q.head_ = 0;
+  is >> q.tail_;
+  delete[] q.data_;
+  q.data_ = new T[q.tail_ - q.head_];
+  QueueIterator<T> it(q);
+  do {
+    is >> it.Next();
+  } while (it.HasNext());
+  return is;
+}
+
+template<class T>
+std::ostream& operator<<(std::ostream& os, const Queue<T>& q) {
+  os << "[ ";
+  QueueIterator<T> it(q);
+  do {
+    os << it.Next() << ' ';
+  } while (it.HasNext());
+  return os << ']';
+}

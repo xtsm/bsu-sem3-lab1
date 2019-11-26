@@ -1,7 +1,7 @@
 #include "include/controller.h"
 #include <iostream>
 
-AppController::AppController(QueueModel& model, CLIView& view) : _model(model), _view(view) {
+AppController::AppController(QueueModel& model, IView& view) : _model(model), _view(view) {
   _view.AddListener(this);
 }
 

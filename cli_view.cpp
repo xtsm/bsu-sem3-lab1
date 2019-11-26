@@ -1,4 +1,4 @@
-#include "include/view.h"
+#include "include/cli_view.h"
 #include "include/resource.h"
 #include <iostream>
 
@@ -18,21 +18,24 @@ void CLIView::ProcessEvent(const Event& evt) {
 bool CLIView::ProcessUserInput() {
   std::cout << "Choose action:\n 1. Push\n 2. Pop\n 3. Shift\n 4. Exit\n> ";
   int cmd;
-  std::cin >> cmd;
+  if (!(std::cin >> cmd)) {
+    std::cout << std::endl;
+    return false;
+  }
   switch (cmd) {
     case 1: {
       std::string el;
       std::cout << "Enter element:\n> ";
       std::cin >> el;
-      _model.Push(el);
+      SendEvent(UserPushEvent(el));
       break;
     }
     case 2: {
-      _model.Pop();
+      SendEvent(UserPopEvent());
       break;
     }
     case 3: {
-      _model.Shift();
+      SendEvent(UserShiftEvent());
       break;
     }
     case 4: {
