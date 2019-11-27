@@ -1,14 +1,14 @@
 #pragma once
-template<class T>
+template<class T, class Q>
 class IVisitor {
  public:
-  virtual void Visit(T&) const = 0;
+  virtual Q Visit(T&) const = 0;
   virtual ~IVisitor() = default;
 };
 
-template<class T>
+template<class T, class Q>
 class IAcceptsVisitor {
  public:
-  virtual void Accept(const IVisitor<T>&) = 0;
+  virtual Q Accept(const IVisitor<T, Q>&) = 0;
   virtual ~IAcceptsVisitor() = default;
 };

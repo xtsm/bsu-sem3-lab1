@@ -1,11 +1,11 @@
 CXXFLAGS=-Wall -Wextra -Weffc++ -Werror -std=c++17
-SRC=main.cpp cli_view.cpp model.cpp controller.cpp observe.cpp
+SRC=main.cpp tostring_visitor.cpp min_visitor.cpp
 
 .PHONY: all test main
 
 all: main
 
-main: $(SRC) res.o
+main: $(SRC)
 		g++ $(CXXFLAGS) $(SRC) -o main.out
 		./main.out
 
