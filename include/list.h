@@ -16,57 +16,6 @@ class List: public IAcceptsVisitor<List<T>, T> {
   List() : data_(nullptr), size_(0), tail_(0) {
   }
 
-  List(const std::initializer_list<T>& rhs) :
-      data_(new T[rhs.size()]),
-      size_(rhs.size()),
-      tail_(rhs.size()) {
-    std::copy(rhs.begin(), rhs.end(), data_);
-  }
-
-  List(const List& rhs) :
-      data_(new T[rhs.Size()]),
-      size_(rhs.Size()),
-      tail_(rhs.Size()) {
-    std::copy(rhs.data_, rhs.data_ + rhs.tail_, data_);
-  }
-
-  List(List&& rhs) :
-      data_(rhs.data_),
-      size_(rhs.size_),
-      tail_(rhs.tail_) {
-    rhs.data_ = nullptr;
-    rhs.size_ = 0;
-    rhs.tail_ = 0;
-  }
-
-  List& operator=(const std::initializer_list<T>& rhs) {
-    delete[] data_;
-    data_ = new T[rhs.size()];
-    size_ = rhs.size();
-    tail_ = rhs.size();
-    std::copy(rhs.begin(), rhs.end(), data_);
-    return *this;
-  }
-
-  List& operator=(const List& rhs) {
-    delete[] data_;
-    data_ = new T[rhs.Size()];
-    size_ = rhs.Size();
-    tail_ = rhs.Size();
-    std::copy(rhs.data_, rhs.data_ + rhs.tail_, data_);
-    return *this;
-  }
-
-  List& operator=(List&& rhs) {
-    data_ = rhs.data_;
-    size_ = rhs.size_;
-    tail_ = rhs.tail_;
-    rhs.data_ = nullptr;
-    rhs.size_ = 0;
-    rhs.tail_ = 0;
-    return *this;
-  }
-
   ~List() {
     delete[] data_;
   }
@@ -102,6 +51,9 @@ class List: public IAcceptsVisitor<List<T>, T> {
   size_t size_;
   size_t tail_;
   friend class ListIterator<T>;
+
+  List<T>(const List<T>&) = delete;
+  List<T>& operator=(const List<T>&) = delete;
 
   void Resize(size_t new_size) {
     T* data_new = new T[new_size];
